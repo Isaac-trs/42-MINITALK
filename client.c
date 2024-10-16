@@ -26,13 +26,13 @@ void	send_char(pid_t pid, unsigned char c)
 		//if ((c >> bit_index ) & 1)
 		{
 			kill(pid, SIGUSR1);
-			//usleep(300);
+			usleep(500);
 			printf("%i) signal sent SIGUSR1\n", j);
 		}	
 		else
 		{	
 			kill(pid, SIGUSR2);
-			//usleep(300); // Use it depending size of the string, >100 char no need
+			usleep(500); // Use it depending size of the string, >100 char no need
 			printf("%i) signal sent SIGUSR2\n", j);
 		}
 		bit_index--;
