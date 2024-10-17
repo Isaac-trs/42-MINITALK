@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:21:22 by istripol         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:32:47 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	main(void)
 	struct sigaction	sa;
 	int					elpid;
 
-	elPid = getpid();
+	elpid = getpid();
 	sa.sa_handler = handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
