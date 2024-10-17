@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
+/*   By: istripol <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2024/01/02 10:53:35 by istripol          #+#    #+#             */
+/*   Updated: 2024/01/03 06:46:48 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+#include "libft.h"
+
+ssize_t	ft_putchar_fd(char c, int fd)
+{
+	return (write(fd, &c, 1));
+}

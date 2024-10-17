@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2023/11/09 02:18:14 by istripol          #+#    #+#             */
+/*   Updated: 2023/11/09 02:23:26 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+#include "libft.h"
+
+int	ft_isprint(int c)
+{
+	return (c >= ' ' && c <= '~');
+}

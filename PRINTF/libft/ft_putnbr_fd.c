@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2024/01/03 06:55:08 by istripol          #+#    #+#             */
+/*   Updated: 2024/01/18 22:30:53 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+#include "libft.h"
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	unsigned int	m;
+
+	m = n;
+	if (n < 0)
+	{
+		m = -n;
+		ft_putchar_fd('-', fd);
+	}
+	if (m > 9)
+		ft_putnbr_fd(m / 10, fd);
+	ft_putchar_fd(m % 10 + '0', fd);
+}

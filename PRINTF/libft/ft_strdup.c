@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2024/01/19 21:37:17 by istripol          #+#    #+#             */
+/*   Updated: 2024/01/19 21:43:38 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+#include "libft.h"
+
+char	*ft_strdup(const char *s)
+{
+	char			*str;
+	const size_t	len = ft_strlen(s);
+
+	str = malloc(len + 1);
+	if (str)
+		ft_strlcpy(str, s, len + 1);
+	return (str);
+}

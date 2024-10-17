@@ -1,21 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2023/10/21 07:56:42 by istripol          #+#    #+#             */
+/*   Updated: 2024/01/18 23:40:26 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "libft.h"
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	size_t			cpt;
+	unsigned char	*copy;
+
+	if (!dest && !src)
+		return (NULL);
+	copy = (unsigned char *)dest;
+	cpt = 0;
+	while (cpt < n)
+	{
+		copy[cpt] = cpt[(unsigned char *)src];
+		cpt++;
+	}
+	return (dest);
+}

@@ -1,21 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2024/01/18 18:18:11 by istripol          #+#    #+#             */
+/*   Updated: 2024/01/19 21:19:45 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+#include "libft.h"
+
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
+{
+	t_list	*tmp;
+	t_list	*new;
+	t_list	*buf;
+
+	new = NULL;
+	tmp = lst;
+	while (tmp)
+	{
+		buf = ft_lstnew(f(tmp->content));
+		if (buf)
+			ft_lstadd_back(&new, buf);
+		else
+		{
+			ft_lstclear(&new, del);
+			return (NULL);
+		}
+		tmp = tmp->next;
+	}
+	return (new);
+}

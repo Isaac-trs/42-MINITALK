@@ -1,21 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:30:09 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:00:41 by istripol         ###   ########.fr       */
+/*   Created: 2023/11/09 02:49:47 by istripol          #+#    #+#             */
+/*   Updated: 2023/12/13 07:22:03 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include "PRINTF/ft_printf.h"
-# include <unistd.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <stdio.h>
-# include <stdlib.h>
-#endif
+#include "libft.h"
+
+char	*ft_strrchr(const char *s, int c)
+{
+	size_t	i;
+	char	*temp;
+
+	i = 0;
+	temp = 0;
+	while (s[i])
+	{
+		if (s[i] == (char)c)
+			temp = (char *)s + i;
+		i++;
+	}
+	if (s[i] == (char)c)
+		temp = (char *)s + i;
+	return (temp);
+}
