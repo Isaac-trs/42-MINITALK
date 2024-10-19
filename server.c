@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/17 14:32:47 by istripol         ###   ########.fr       */
+/*   Updated: 2024/10/19 14:06:36by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,45 @@
 void	handler(int signum)
 {
 	static int				bit_received;
+	static	unsigned int		client_pid =0;
+	static	int				client_bit;
 	static unsigned char	c;
-
-	//First bit to be transmitted
-	c |= (signum == SIGUSR1);
-	bit_received++;
-	if (bit_received == 8)
+	static int j =0;
+	
+	if (client_bit < 32 && !bit_received)
 	{
-		if (c == 0)
-			ft_printf("\n>>End of message<<\n");
-		else
-			ft_printf("%c", c);
-		bit_received = 0;
-		c = 0;
+		j++;
+		client_bit++;
+		client_pid |= (signum == SIGUSR1);
+		if (client_bit < 32)
+			client_pid <<= 1;
+		//ft_printf("%i) client PID received |%i|\n", j,  (int)client_pid);
+		else if (client_bit == 32)
+			ft_printf("%i) client PID received |%i|\n", j,  (int)client_pid);
+
 	}
-	else
-		c <<= 1;
+	else if (client_bit == 32)
+	{
+		j = 0;
+		//First bit to be transmitted
+		c |= (signum == SIGUSR1);
+		bit_received++;
+		if (bit_received == 8)
+		{
+			if (c == 0)
+			{
+				ft_printf("\n>>End of message<<\n");
+				client_pid = 0;
+				client_bit = 0;
+			}
+			else
+				ft_printf("%c", c);
+			bit_received = 0;
+			c = 0;
+		}
+		else
+			c <<= 1;
+	}
 }
 
 int	main(void)
