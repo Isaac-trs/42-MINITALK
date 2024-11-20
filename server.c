@@ -12,30 +12,26 @@
 
 #include "minitalk.h"
 
+
+
 void	handler(int signum)
 {
 	static int				bit_received;
-	static	unsigned int		client_pid =0;
+	static	unsigned int	client_pid =0;
 	static	int				client_bit;
 	static unsigned char	c;
-	static int j =0;
 	
 	if (client_bit < 32 && !bit_received)
 	{
-		j++;
 		client_bit++;
 		client_pid |= (signum == SIGUSR1);
 		if (client_bit < 32)
 			client_pid <<= 1;
-		//ft_printf("%i) client PID received |%i|\n", j,  (int)client_pid);
 		else if (client_bit == 32)
-			ft_printf("%i) client PID received |%i|\n", j,  (int)client_pid);
-
+			ft_printf("client PID received |%i|\n", (int)client_pid);
 	}
 	else if (client_bit == 32)
 	{
-		j = 0;
-		//First bit to be transmitted
 		c |= (signum == SIGUSR1);
 		bit_received++;
 		if (bit_received == 8)
@@ -43,8 +39,12 @@ void	handler(int signum)
 			if (c == 0)
 			{
 				ft_printf("\n>>End of message<<\n");
+				kill(client_pid, SIGUSR2);
 				client_pid = 0;
+				bit_received = 0;
 				client_bit = 0;
+				c = 0;
+				return ;
 			}
 			else
 				ft_printf("%c", c);
@@ -53,7 +53,9 @@ void	handler(int signum)
 		}
 		else
 			c <<= 1;
+		kill(client_pid, SIGUSR1);
 	}
+
 }
 
 int	main(void)
@@ -75,4 +77,3 @@ int	main(void)
 	}
 	return (0);
 }
-

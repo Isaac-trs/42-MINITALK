@@ -6,38 +6,30 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:01:45 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/19 13:16:14 by istripol         ###   ########.fr       */
+/*   Updated: 2024/10/19 16:50:19 istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int		g_serv_pid;
-
+int		g_ack;
 
 void	send_client_pid(pid_t pid)
 {
+	int client_pid;
 	int	bit_index;
 	int	j = 1;
-	bit_index = 31;
-	unsigned int client_pid = getpid();
 
+	client_pid = getpid();
+	bit_index = 31;
 	ft_printf("client PID %d\n", client_pid);
-	
 	while (bit_index >= 0)
 	{
 		if ((1 << bit_index) & client_pid)
-		{
 			kill(pid, SIGUSR1);
-			ft_printf("%i) 1 SENT SIGUSR1\n", j);
-			usleep(1000);
-		}
 		else
-		{
 			kill(pid, SIGUSR2);
-			ft_printf("%i) 0 SENT SIGUSR2\n", j);
-			usleep(1000);
-		}
+		usleep(1000);
 		j++;
 		bit_index--;
 	}
@@ -51,18 +43,13 @@ void	send_char(pid_t pid, unsigned char c)
 	bit_index = 7;
 	while (bit_index >= 0)
 	{
+		g_ack = 0;
 		if ((1 << bit_index) & c)
-		{
 			kill(pid, SIGUSR1);
-			usleep(8000);
-			ft_printf("%i) signal sent SIGUSR1\n", j);
-		}
 		else
-		{
 			kill(pid, SIGUSR2);
-			usleep(8000);
-			ft_printf("%i) signal sent SIGUSR2\n", j);
-		}
+		while (!g_ack)
+			pause();
 		bit_index--;
 		j++;
 	}
@@ -75,21 +62,40 @@ void	send_message(pid_t pid, unsigned char *str)
 		send_char(pid, *str);
 		str++;
 	}
-	send_char(pid, *str);
+	send_char(pid, '\0');
+	
+}
+
+void	ack_handler(int signum)
+{
+	if (signum == SIGUSR1)
+		g_ack = 1;
+	else if (signum == SIGUSR2)
+		exit(0);
+	else
+	{
+		ft_printf("\n>>ACK ERROR<<\n");
+		exit(0);
+	}
 }
 
 int	main(int ac, char **av)
 {
 	unsigned char	tmp;
+	int	serv_pid;
+//	struct sigaction 	sa;
+//	sa.sa_handler = ack_handler;
+//	sigemptyset(&sa.sa_mask);
+//	sa.sa_flags = 0;
 
-	tmp = 0;
 	if (ac != 3)
-		return (printf("Wrong number of args !\n"));
-	g_serv_pid = atoi(av[1]);
-	if (!g_serv_pid || kill(g_serv_pid, 0) == -1)
+		return (ft_printf("Wrong number of args !\n"));
+	serv_pid = atoi(1[av]);
+	if (!serv_pid || kill(serv_pid, 0) == -1)
 		return (ft_printf("Wrong PID!\n"));
-	ft_printf("message to be sent: |%s|\n", av[2]);
-	send_client_pid(g_serv_pid);
-	send_message(g_serv_pid, (unsigned char *)av[2]);
+	send_client_pid(serv_pid);
+	signal(SIGUSR1, ack_handler);
+	signal(SIGUSR2, ack_handler);
+	send_message(serv_pid, (unsigned char *)2[av]);
 	return (0);
 }
