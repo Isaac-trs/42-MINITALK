@@ -7,7 +7,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
 
-.PHONY : all, makelibft, clean, fclean, re
+.PHONY : all, makeprintf, server, client clean, fclean, re, bonus
 
 all: makeprintf $(SERVER) $(CLIENT)
 	
@@ -22,9 +22,12 @@ $(CLIENT):
 
 clean:
 	@(cd $(PRINTFDIR) && make clean) 
-	@rm -f $(SERVER) $(CLIENT)
 
 fclean: clean
 	@(cd $(PRINTFDIR) && make fclean)
+	@rm -f $(SERVER) $(CLIENT)
+
+bonus:
+	@echo "Bonus already in satisfied in my mandatory part :)"
 
 re: fclean all
