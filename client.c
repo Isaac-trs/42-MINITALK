@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:01:45 by istripol          #+#    #+#             */
-/*   Updated: 2024/10/19 16:50:19 istripol         ###   ########.fr       */
+/*   Updated: 2024/12/26 06:19:11 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@ int		g_ack;
 
 void	send_client_pid(pid_t pid)
 {
-	int client_pid;
+	int	client_pid;
 	int	bit_index;
-	int	j = 1;
 
 	client_pid = getpid();
 	bit_index = 31;
@@ -30,15 +29,13 @@ void	send_client_pid(pid_t pid)
 		else
 			kill(pid, SIGUSR2);
 		usleep(1000);
-		j++;
 		bit_index--;
 	}
 }
 
 void	send_char(pid_t pid, unsigned char c)
 {
-	static int	j = 1;
-	int			bit_index;
+	int	bit_index;
 
 	bit_index = 7;
 	while (bit_index >= 0)
@@ -51,7 +48,6 @@ void	send_char(pid_t pid, unsigned char c)
 		while (!g_ack)
 			pause();
 		bit_index--;
-		j++;
 	}
 }
 
@@ -63,7 +59,6 @@ void	send_message(pid_t pid, unsigned char *str)
 		str++;
 	}
 	send_char(pid, '\0');
-	
 }
 
 void	ack_handler(int signum)
@@ -71,7 +66,10 @@ void	ack_handler(int signum)
 	if (signum == SIGUSR1)
 		g_ack = 1;
 	else if (signum == SIGUSR2)
+	{
+		ft_printf("\n>>MESSAGE SUCCESFULLY SENT<<\n");
 		exit(0);
+	}
 	else
 	{
 		ft_printf("\n>>ACK ERROR<<\n");
@@ -81,12 +79,7 @@ void	ack_handler(int signum)
 
 int	main(int ac, char **av)
 {
-	unsigned char	tmp;
-	int	serv_pid;
-//	struct sigaction 	sa;
-//	sa.sa_handler = ack_handler;
-//	sigemptyset(&sa.sa_mask);
-//	sa.sa_flags = 0;
+	int				serv_pid;
 
 	if (ac != 3)
 		return (ft_printf("Wrong number of args !\n"));
