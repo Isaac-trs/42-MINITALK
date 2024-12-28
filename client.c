@@ -16,8 +16,8 @@ int		g_ack;
 
 void	send_client_pid(pid_t pid)
 {
-	int	client_pid;
-	int	bit_index;
+	pid_t	client_pid;
+	int		bit_index;
 
 	client_pid = getpid();
 	bit_index = 31;
@@ -28,38 +28,61 @@ void	send_client_pid(pid_t pid)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		usleep(1000);
 		bit_index--;
+		usleep(1000);
 	}
 }
 
-void	send_char(pid_t pid, unsigned char c)
+void	send_size(pid_t pid, unsigned int size)
 {
 	int	bit_index;
 
-	bit_index = 7;
-	while (bit_index >= 0)
+	bit_index = 31;
+	while (bit_index >= 0)	
 	{
 		g_ack = 0;
-		if ((1 << bit_index) & c)
+		if ((1 << bit_index) & size)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
+		bit_index--;
 		while (!g_ack)
 			pause();
-		bit_index--;
 	}
 }
 
 void	send_message(pid_t pid, unsigned char *str)
 {
-	while (*str)
+	int	bit_index;
+
+	while (*str || *str == 0)
 	{
-		send_char(pid, *str);
-		str++;
+		bit_index = 7;
+		while (bit_index >= 0)
+		{
+			g_ack = 0;
+			if ((1 << bit_index) & *str)
+				kill(pid, SIGUSR1);
+			else
+				kill(pid, SIGUSR2);
+			while (!g_ack)
+				pause();
+			bit_index--;
+		}
+		if (*str)
+			str++;
 	}
-	send_char(pid, '\0');
 }
+
+//void	send_message(pid_t pid, unsigned char *str)
+//{
+//	while (*str)
+//	{
+//		send_char(pid, *str);
+//		str++;
+//	}
+//	send_char(pid, '\0');
+//}
 
 void	ack_handler(int signum)
 {
@@ -89,6 +112,7 @@ int	main(int ac, char **av)
 	send_client_pid(serv_pid);
 	signal(SIGUSR1, ack_handler);
 	signal(SIGUSR2, ack_handler);
+	send_size(serv_pid, ft_strlen(2[av]));
 	send_message(serv_pid, (unsigned char *)2[av]);
 	return (0);
 }
