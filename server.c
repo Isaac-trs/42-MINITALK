@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/31 08:19:15 by istripol         ###   ########.fr       */
+/*   Updated: 2024/12/31 08:35:37 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ int	receive_message(int signum, int size)
 		str = NULL;
 		i = 0;
 		kill(g_client_pid, SIGUSR2);
-		exit(0);
 		return (1);
 	}
 	return (kill(g_client_pid, SIGUSR1));
