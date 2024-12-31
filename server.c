@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/31 08:35:37 by istripol         ###   ########.fr       */
+/*   Updated: 2024/12/31 09:07:35 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	receive_pid_and_size(int signum, int *i)
 		signum_received++;
 		if (signum_received == 64)
 		{
-			ft_printf("client SIZE received |%i|\n", *i);
+			ft_printf("string SIZE received |%i|\n", *i);
 			signum_received = 0;
 		}
 		kill(g_client_pid, SIGUSR1);
@@ -89,7 +89,7 @@ int	receive_message(int signum, int size)
 		kill(g_client_pid, SIGUSR2);
 		return (1);
 	}
-	return (kill(g_client_pid, SIGUSR1));
+	return (0);
 }
 
 void	handler(int signum)
@@ -107,7 +107,9 @@ void	handler(int signum)
 	}
 	else if (bits_received == 64)
 	{
-		if (receive_message(signum, size))
+		if (!receive_message(signum, size))
+			kill(g_client_pid, SIGUSR1);
+		else
 		{
 			bits_received = 0;
 			g_client_pid = 0;
