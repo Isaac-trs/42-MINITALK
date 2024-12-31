@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/27 17:15:54 by istripol         ###   ########.fr       */
+/*   Updated: 2024/12/31 06:23:10 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,37 @@
 
 pid_t	g_client_pid = 0;
 
+void	receive_pid_and_size(int signum, int *i)
+{
+	static int	signum_received;
+	
+	if (signum_received < 32)
+	{
+		*i <<= 1;
+		*i |= (signum == SIGUSR1);
+		signum_received++;
+		if (signum_received == 32)
+			ft_printf("client PID received |%i|\n", *i);
+	}
+	else if (signum_received >= 32 && signum_received < 64)
+	{
+		*i <<= 1;
+		*i |= (signum == SIGUSR1);
+		signum_received++;
+		if (signum_received == 64)
+		{
+			ft_printf("client SIZE received |%i|\n", *i);
+			signum_received = 0;
+		}
+		kill(g_client_pid, SIGUSR1);
+	}
+}
+
 int	receive_message(int signum, int size)
 {
 	static unsigned int		bit_received;
 	static unsigned char	c;
-	static char				*str = NULL;
+	static unsigned char				*str = NULL;
 	static int				i;
 
 	if (str == NULL)
@@ -50,34 +76,23 @@ int	receive_message(int signum, int size)
 
 void	handler(int signum)
 {
-	static	int					client_bit;
-	static	int					size_bit;
-	static	unsigned int					size;
+	static	int					bits_received;
+	static	int					size;
 
-	if (client_bit < 32)
+	if (bits_received < 64)
 	{
-		g_client_pid <<= 1;
-		g_client_pid |= (signum == SIGUSR1);
-		client_bit++;
-		if (client_bit == 32)
-			ft_printf("client PID received |%i|\n", g_client_pid);
+		if (bits_received < 32)
+			receive_pid_and_size(signum, &g_client_pid);
+		else 
+			receive_pid_and_size(signum, &size);
+		bits_received++;
 	}
-	else if (client_bit == 32 && size_bit < 32)
-	{
-		size <<= 1;
-		size |= (signum == SIGUSR1);
-		size_bit++;
-		if (size_bit == 32)
-			ft_printf("Size received |%i|\n", size);
-		kill(g_client_pid, SIGUSR1);
-	}
-	else if (client_bit == 32 && size_bit == 32)
+	else if (bits_received == 64)
 	{
 		if (receive_message(signum, size))
 		{
-			client_bit = 0;
+			bits_received = 0;
 			g_client_pid = 0;
-			size_bit = 0;
 			size = 0;
 			ft_printf("Now waiting for new messages...\n\n");
 		}
