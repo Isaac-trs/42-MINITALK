@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/31 06:23:10 by istripol         ###   ########.fr       */
+/*   Updated: 2024/12/31 08:19:15 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ pid_t	g_client_pid = 0;
 void	receive_pid_and_size(int signum, int *i)
 {
 	static int	signum_received;
-	
+
 	if (signum_received < 32)
 	{
 		*i <<= 1;
@@ -40,50 +40,69 @@ void	receive_pid_and_size(int signum, int *i)
 	}
 }
 
-int	receive_message(int signum, int size)
+int	process_bits(int signum, unsigned char **str, int *i)
 {
 	static unsigned int		bit_received;
 	static unsigned char	c;
-	static unsigned char				*str = NULL;
-	static int				i;
 
-	if (str == NULL)
-		str = ft_calloc(size + 1, sizeof(char));
 	c |= (signum == SIGUSR1);
 	bit_received++;
 	if (bit_received == 8)
 	{
 		if (c == 0)
 		{
-			printf("From [%i]:\n	>> \"%s\"\n\n>>End of message<<\n", g_client_pid, str);
-			free(str);
-			str = NULL;
 			bit_received = 0;
 			c = 0;
-			i = 0;
-			kill(g_client_pid, SIGUSR2);
 			return (1);
 		}
-		*(str+i) = c;
-		i++;
+		*(*str + *i) = c;
+		(*i)++;
 		bit_received = 0;
 		c = 0;
 	}
 	else
 		c <<= 1;
+	return (0);
+}
+
+int	receive_message(int signum, int size)
+{
+	static unsigned char	*str = NULL;
+	static int				i;
+
+	if (str == NULL)
+	{
+		str = ft_calloc(size + 1, sizeof(unsigned char));
+		if (!str)
+		{
+			ft_printf("\n>>CALLOC ERROR EXITING<<\n");
+			exit(0);
+		}
+	}
+	if (process_bits(signum, &str, &i))
+	{
+		ft_printf("From [%i]:\n    >> \"%s\"\n\n>>End of message<<\n",
+			g_client_pid, str);
+		free(str);
+		str = NULL;
+		i = 0;
+		kill(g_client_pid, SIGUSR2);
+		exit(0);
+		return (1);
+	}
 	return (kill(g_client_pid, SIGUSR1));
 }
 
 void	handler(int signum)
 {
-	static	int					bits_received;
-	static	int					size;
+	static int					bits_received;
+	static int					size;
 
 	if (bits_received < 64)
 	{
 		if (bits_received < 32)
 			receive_pid_and_size(signum, &g_client_pid);
-		else 
+		else
 			receive_pid_and_size(signum, &size);
 		bits_received++;
 	}
@@ -107,7 +126,7 @@ int	main(void)
 	elpid = getpid();
 	sa.sa_handler = handler;
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
+	sa.sa_flags = SA_RESTART;
 	ft_printf("server PID is  %d\n", elpid);
 	ft_printf("Now waiting for messages...\n\n");
 	sigaction(SIGUSR1, &sa, NULL);

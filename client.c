@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:01:45 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/26 06:19:11 by istripol         ###   ########.fr       */
+/*   Updated: 2024/12/31 07:56:59 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	send_size(pid_t pid, unsigned int size)
 	int	bit_index;
 
 	bit_index = 31;
-	while (bit_index >= 0)	
+	while (bit_index >= 0)
 	{
 		g_ack = 0;
 		if ((1 << bit_index) & size)
