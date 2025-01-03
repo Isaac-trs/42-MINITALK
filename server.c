@@ -65,7 +65,7 @@ int	process_bits(int signum, unsigned char **str, int *i)
 	return (0);
 }
 
-int	receive_message(int signum, int size)
+int	receive_message(int signum, unsigned int size)
 {
 	static unsigned char	*str = NULL;
 	static int				i;
@@ -110,10 +110,10 @@ void	handler(int signum)
 			kill(g_client_pid, SIGUSR1);
 		else
 		{
-			kill(g_client_pid, SIGUSR2);
 			bits_received = 0;
-			g_client_pid = 0;
 			size = 0;
+			kill(g_client_pid, SIGUSR2);
+			g_client_pid = 0;
 			ft_printf("Now waiting for new messages...\n\n");
 		}
 	}
@@ -126,7 +126,7 @@ int	main(void)
 
 	elpid = getpid();
 	sa.sa_handler = handler;
-	sigemptyset(&sa.sa_mask);
+	//sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO | SA_RESTART | SA_NODEFER;
 	ft_printf("server PID is  %d\n", elpid);
 	ft_printf("Now waiting for messages...\n\n");
