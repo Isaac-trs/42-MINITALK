@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/31 09:07:35 by istripol         ###   ########.fr       */
+/*   Updated: 2025/01/02 07:21:41 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,26 @@
 
 pid_t	g_client_pid = 0;
 
-void	receive_pid_and_size(int signum, int *i)
+void	receive_pid_and_size(int signum, void *i)
 {
 	static int	signum_received;
 
 	if (signum_received < 32)
 	{
-		*i <<= 1;
-		*i |= (signum == SIGUSR1);
+		*(pid_t *)i <<= 1;
+		*(pid_t *)i |= (signum == SIGUSR1);
 		signum_received++;
 		if (signum_received == 32)
-			ft_printf("client PID received |%i|\n", *i);
+			ft_printf("client PID received |%i|\n", *(pid_t *)i);
 	}
 	else if (signum_received >= 32 && signum_received < 64)
 	{
-		*i <<= 1;
-		*i |= (signum == SIGUSR1);
+		*(unsigned int *)i <<= 1;
+		*(unsigned int *)i |= (signum == SIGUSR1);
 		signum_received++;
 		if (signum_received == 64)
 		{
-			ft_printf("string SIZE received |%i|\n", *i);
+			ft_printf("string SIZE received |%u|\n", *(unsigned int *)i);
 			signum_received = 0;
 		}
 		kill(g_client_pid, SIGUSR1);
@@ -86,7 +86,6 @@ int	receive_message(int signum, int size)
 		free(str);
 		str = NULL;
 		i = 0;
-		kill(g_client_pid, SIGUSR2);
 		return (1);
 	}
 	return (0);
@@ -94,8 +93,8 @@ int	receive_message(int signum, int size)
 
 void	handler(int signum)
 {
-	static int					bits_received;
-	static int					size;
+	static int						bits_received;
+	static unsigned int				size;
 
 	if (bits_received < 64)
 	{
@@ -111,6 +110,7 @@ void	handler(int signum)
 			kill(g_client_pid, SIGUSR1);
 		else
 		{
+			kill(g_client_pid, SIGUSR2);
 			bits_received = 0;
 			g_client_pid = 0;
 			size = 0;
@@ -127,7 +127,7 @@ int	main(void)
 	elpid = getpid();
 	sa.sa_handler = handler;
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
+	sa.sa_flags = SA_SIGINFO | SA_RESTART | SA_NODEFER;
 	ft_printf("server PID is  %d\n", elpid);
 	ft_printf("Now waiting for messages...\n\n");
 	sigaction(SIGUSR1, &sa, NULL);

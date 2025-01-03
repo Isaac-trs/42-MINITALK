@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:01:45 by istripol          #+#    #+#             */
-/*   Updated: 2024/12/31 07:56:59 by istripol         ###   ########.fr       */
+/*   Updated: 2025/01/02 07:20:32 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,6 @@ void	send_message(pid_t pid, unsigned char *str)
 			str++;
 	}
 }
-
-//void	send_message(pid_t pid, unsigned char *str)
-//{
-//	while (*str)
-//	{
-//		send_char(pid, *str);
-//		str++;
-//	}
-//	send_char(pid, '\0');
-//}
 
 void	ack_handler(int signum)
 {

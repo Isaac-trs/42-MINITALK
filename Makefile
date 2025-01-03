@@ -21,11 +21,11 @@ $(CLIENT):
 	@$(CC) $(CFLAGS) $(CLIENT).c $(PRINTFDIR)/$(PRINTF) -o $(CLIENT)
 
 clean:
-	@(cd $(PRINTFDIR) && make clean) 
+	@cd $(PRINTFDIR) && make clean 
 
 fclean: clean
-	@(cd $(PRINTFDIR) && make fclean)
 	@rm -f $(SERVER) $(CLIENT)
+	@cd $(PRINTFDIR) && make fclean
 
 bonus:
 	@echo "Bonus already in satisfied in my mandatory part :)"
