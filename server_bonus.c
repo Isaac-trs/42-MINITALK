@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:13:44 by istripol          #+#    #+#             */
-/*   Updated: 2025/01/06 15:51:25 by istripol         ###   ########.fr       */
+/*   Updated: 2025/01/06 16:03:49 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	receive_pid_and_size(int signum, void *i)
 		*(pid_t *)i <<= 1;
 		*(pid_t *)i |= (signum == SIGUSR1);
 		signum_received++;
+		if (signum_received == 32)
+			ft_printf("client PID received |%i|\n", *(pid_t *)i);
 	}
 	else if (signum_received >= 32 && signum_received < 64)
 	{
@@ -30,7 +32,10 @@ void	receive_pid_and_size(int signum, void *i)
 		*(unsigned int *)i |= (signum == SIGUSR1);
 		signum_received++;
 		if (signum_received == 64)
+		{
+			ft_printf("string SIZE received |%u|\n", *(unsigned int *)i);
 			signum_received = 0;
+		}
 		kill(g_client_pid, SIGUSR1);
 	}
 }
@@ -109,7 +114,7 @@ void	handler(int signum)
 			size = 0;
 			kill(g_client_pid, SIGUSR2);
 			g_client_pid = 0;
-			ft_printf("\nNow waiting for new messages...\n\n");
+			ft_printf("Now waiting for new messages...\n\n");
 		}
 	}
 }
