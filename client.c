@@ -6,7 +6,7 @@
 /*   By: istripol <istripol@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:01:45 by istripol          #+#    #+#             */
-/*   Updated: 2025/01/02 07:20:32 by istripol         ###   ########.fr       */
+/*   Updated: 2025/01/06 08:02:19 by istripol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	send_size(pid_t pid, unsigned int size)
 			kill(pid, SIGUSR2);
 		bit_index--;
 		while (!g_ack)
-			pause();
+			;
 	}
 }
 
@@ -66,7 +66,7 @@ void	send_message(pid_t pid, unsigned char *str)
 			else
 				kill(pid, SIGUSR2);
 			while (!g_ack)
-				pause();
+				;
 			bit_index--;
 		}
 		if (*str)
